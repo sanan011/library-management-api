@@ -12,6 +12,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -37,8 +41,12 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDto>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
+    public ResponseEntity<Page<BookResponseDto>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "title") String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(bookService.getAllBooks(pageable));
     }
 
     @PutMapping("/{id}")

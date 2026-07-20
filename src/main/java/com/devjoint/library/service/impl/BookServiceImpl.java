@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -43,10 +45,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponseDto> getAllBooks() {
-        return bookRepository.findAll().stream()
-                .map(bookMapper::toResponseDto)
-                .collect(Collectors.toList());
+    public Page<BookResponseDto> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(bookMapper::toResponseDto);
     }
 
     @Override
