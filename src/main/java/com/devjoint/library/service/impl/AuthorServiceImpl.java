@@ -6,6 +6,7 @@ import com.devjoint.library.entity.Author;
 import com.devjoint.library.mapper.AuthorMapper;
 import com.devjoint.library.repository.AuthorRepository;
 import com.devjoint.library.service.AuthorService;
+import com.devjoint.library.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -28,7 +29,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorResponseDto getAuthorById(Long id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id));
         return authorMapper.toResponseDto(author);
     }
 
@@ -42,7 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorResponseDto updateAuthor(Long id, AuthorRequestDto requestDto) {
         Author existingAuthor = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id));
         
         existingAuthor.setName(requestDto.getName());
         Author updatedAuthor = authorRepository.save(existingAuthor);
@@ -52,7 +53,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
-            throw new RuntimeException("Author not found with id: " + id);
+            throw new ResourceNotFoundException("Author not found with id: " + id);
         }
         authorRepository.deleteById(id);
     }

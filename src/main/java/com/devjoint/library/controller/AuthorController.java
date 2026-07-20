@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,7 +22,13 @@ public class AuthorController {
 
     @PostMapping
     public ResponseEntity<AuthorResponseDto> createAuthor(@Valid @RequestBody AuthorRequestDto requestDto) {
-        return new ResponseEntity<>(authorService.createAuthor(requestDto), HttpStatus.CREATED);
+        AuthorResponseDto createdAuthor = authorService.createAuthor(requestDto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdAuthor.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdAuthor);
     }
 
     @GetMapping("/{id}")

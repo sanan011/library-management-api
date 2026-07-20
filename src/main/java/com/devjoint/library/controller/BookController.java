@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,7 +22,13 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<BookResponseDto> createBook(@Valid @RequestBody BookRequestDto requestDto) {
-        return new ResponseEntity<>(bookService.createBook(requestDto), HttpStatus.CREATED);
+        BookResponseDto createdBook = bookService.createBook(requestDto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdBook.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdBook);
     }
 
     @GetMapping("/{id}")

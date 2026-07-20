@@ -8,6 +8,7 @@ import com.devjoint.library.mapper.BookMapper;
 import com.devjoint.library.repository.AuthorRepository;
 import com.devjoint.library.repository.BookRepository;
 import com.devjoint.library.service.BookService;
+import com.devjoint.library.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -26,7 +27,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookMapper.toEntity(requestDto);
         
         Author author = authorRepository.findById(requestDto.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + requestDto.getAuthorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + requestDto.getAuthorId()));
         
         book.setAuthor(author);
         Book savedBook = bookRepository.save(book);
@@ -37,7 +38,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto getBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
         return bookMapper.toResponseDto(book);
     }
 
@@ -51,13 +52,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto updateBook(Long id, BookRequestDto requestDto) {
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
         
         existingBook.setTitle(requestDto.getTitle());
         existingBook.setIsbn(requestDto.getIsbn());
         
         Author author = authorRepository.findById(requestDto.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + requestDto.getAuthorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + requestDto.getAuthorId()));
         
         existingBook.setAuthor(author);
         
@@ -68,7 +69,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(Long id) {
         if (!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found with id: " + id);
+            throw new ResourceNotFoundException("Book not found with id: " + id);
         }
         bookRepository.deleteById(id);
     }
