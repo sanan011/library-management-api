@@ -9,6 +9,7 @@ Bu layihə kitabxana idarəetmə sistemləri üçün nəzərdə tutulmuş RESTfu
 - **Spring Data JPA**
 - **PostgreSQL**
 - **Lombok**
+- **MapStruct** (Mapper-lərin avtomatik generasiyası üçün)
 - **Springdoc OpenAPI** (Swagger)
 
 ## 🚀 Quraşdırma (Installation)
