@@ -23,16 +23,19 @@ Layihəni lokal mühitinizdə işə salmaq üçün aşağıdakı addımları izl
 docker run --name library-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=library -p 5432:5432 -d postgres
 ```
 
-### 2. `application.yml` Ayarları
+### 2. `application.yml` Ayarları və Environment Variables (Mühit Dəyişənləri)
 
-Layihənin `src/main/resources/application.yml` (və ya `application.properties`) faylında məlumat bazası əlaqələrinin doğru tənzimləndiyindən əmin olun:
+Layihə verilənlər bazası bağlantısı üçün `DB_USERNAME` və `DB_PASSWORD` environment variable-larından istifadə edir. Layihəni işə salmazdan əvvəl bu dəyişənləri təyin etməlisiniz (və ya `.env` faylından istifadə edə bilərsiniz). Nümunə üçün layihə kökündəki `.env.example` faylına baxa bilərsiniz.
+Əgər bu dəyişənlər təyin edilməzsə, default olaraq lokal dəyərlər (`postgres` / `password`) istifadə ediləcək.
+
+Layihənin `src/main/resources/application.yml` faylındakı konfiqurasiya aşağıdakı kimidir:
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/library
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/library_db
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
   jpa:
     hibernate:
       ddl-auto: update
