@@ -3,34 +3,16 @@ package com.devjoint.library.mapper;
 import com.devjoint.library.dto.BookRequestDto;
 import com.devjoint.library.dto.BookResponseDto;
 import com.devjoint.library.entity.Book;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class BookMapper {
+@Mapper(componentModel = "spring")
+public interface BookMapper {
 
-    public Book toEntity(BookRequestDto requestDto) {
-        if (requestDto == null) {
-            return null;
-        }
-        Book book = new Book();
-        book.setTitle(requestDto.getTitle());
-        book.setIsbn(requestDto.getIsbn());
-        // Note: Author relationship is resolved in BookService
-        return book;
-    }
+    @Mapping(target = "author", ignore = true)
+    Book toEntity(BookRequestDto requestDto);
 
-    public BookResponseDto toResponseDto(Book book) {
-        if (book == null) {
-            return null;
-        }
-        BookResponseDto dto = new BookResponseDto();
-        dto.setId(book.getId());
-        dto.setTitle(book.getTitle());
-        dto.setIsbn(book.getIsbn());
-        if (book.getAuthor() != null) {
-            dto.setAuthorId(book.getAuthor().getId());
-            dto.setAuthorName(book.getAuthor().getName());
-        }
-        return dto;
-    }
+    @Mapping(source = "author.id", target = "authorId")
+    @Mapping(source = "author.name", target = "authorName")
+    BookResponseDto toResponseDto(Book book);
 }
